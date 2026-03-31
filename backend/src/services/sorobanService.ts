@@ -46,9 +46,7 @@ class SorobanService {
   private getLoanManagerContractId(): string {
     const contractId = process.env.LOAN_MANAGER_CONTRACT_ID;
     if (!contractId) {
-      throw AppError.internal(
-        "LOAN_MANAGER_CONTRACT_ID is not configured",
-      );
+      throw AppError.internal("LOAN_MANAGER_CONTRACT_ID is not configured");
     }
     return contractId;
   }
@@ -56,9 +54,7 @@ class SorobanService {
   private getLendingPoolContractId(): string {
     const contractId = process.env.LENDING_POOL_CONTRACT_ID;
     if (!contractId) {
-      throw AppError.internal(
-        "LENDING_POOL_CONTRACT_ID is not configured",
-      );
+      throw AppError.internal("LENDING_POOL_CONTRACT_ID is not configured");
     }
     return contractId;
   }
@@ -66,9 +62,7 @@ class SorobanService {
   private getPoolTokenAddress(): string {
     const address = process.env.POOL_TOKEN_ADDRESS;
     if (!address) {
-      throw AppError.internal(
-        "POOL_TOKEN_ADDRESS is not configured",
-      );
+      throw AppError.internal("POOL_TOKEN_ADDRESS is not configured");
     }
     return address;
   }
@@ -76,9 +70,7 @@ class SorobanService {
   private getRemittanceNftContractId(): string {
     const contractId = process.env.REMITTANCE_NFT_CONTRACT_ID;
     if (!contractId) {
-      throw AppError.internal(
-        "REMITTANCE_NFT_CONTRACT_ID is not configured",
-      );
+      throw AppError.internal("REMITTANCE_NFT_CONTRACT_ID is not configured");
     }
     return contractId;
   }
@@ -162,10 +154,9 @@ class SorobanService {
 
     const account = await rpcCall(server.getAccount(borrowerPublicKey));
 
-    const borrowerScVal = nativeToScVal(
-      Address.fromString(borrowerPublicKey),
-      { type: "address" },
-    );
+    const borrowerScVal = nativeToScVal(Address.fromString(borrowerPublicKey), {
+      type: "address",
+    });
     const loanIdScVal = nativeToScVal(loanId, { type: "u32" });
     const amountScVal = nativeToScVal(BigInt(amount), { type: "i128" });
 
@@ -261,14 +252,12 @@ class SorobanService {
 
     const account = await server.getAccount(providerPublicKey);
 
-    const providerScVal = nativeToScVal(
-      Address.fromString(providerPublicKey),
-      { type: "address" },
-    );
-    const tokenScVal = nativeToScVal(
-      Address.fromString(tokenAddress),
-      { type: "address" },
-    );
+    const providerScVal = nativeToScVal(Address.fromString(providerPublicKey), {
+      type: "address",
+    });
+    const tokenScVal = nativeToScVal(Address.fromString(tokenAddress), {
+      type: "address",
+    });
     const sharesScVal = nativeToScVal(BigInt(shares), { type: "i128" });
 
     const tx = new TransactionBuilder(account, {
@@ -494,13 +483,17 @@ class SorobanService {
    * Ping the Stellar RPC server to verify connectivity.
    * Calls getLatestLedger() with a 5-second timeout.
    */
-  async healthCheck(): Promise<{ connected: boolean; latestLedger?: number; error?: string }> {
+  async healthCheck(): Promise<{
+    connected: boolean;
+    latestLedger?: number;
+    error?: string;
+  }> {
     try {
       const server = this.getRpcServer();
-      const timeoutPromise = new Promise<{ connected: boolean; error: string }>((_, reject) =>
-        setTimeout(() => reject(new Error("RPC timeout")), 5000)
+      const timeoutPromise = new Promise<{ connected: boolean; error: string }>(
+        (_, reject) => setTimeout(() => reject(new Error("RPC timeout")), 5000),
       );
-      
+
       const ledgerPromise = server.getLatestLedger().then((res) => ({
         connected: true,
         latestLedger: res.sequence,
@@ -583,7 +576,6 @@ class SorobanService {
     );
     return { repaymentDelta, defaultPenalty };
   }
-
 }
 
 export const sorobanService = new SorobanService();
